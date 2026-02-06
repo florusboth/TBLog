@@ -21,4 +21,4 @@ Things I want to look at in the future:
 - create website URLs based on the branch name
 - combine the two workflows, as they are very similar
 
-But now first, learn more about Hugo and how to use it.
+But now first, learn more about hugo and how to use it.
