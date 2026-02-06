@@ -55,8 +55,24 @@ jobs:
           - name: Install Node.js dependencies
             run: '[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true'
 
+          - name: Cache restore
+            id: cache-restore
+            uses: actions/cache/restore@v5
+            with:
+              path: ${{ runner.temp }}/hugo_cache
+              key: hugo-${{ github.run_id }}
+              restore-keys:
+                hugo-
+
           - name: Build
             run: hugo --gc --minify
+
+          - name: Cache save
+            id: cache-save
+            uses: actions/cache/save@v5
+            with:
+              path: ${{ runner.temp }}/hugo_cache
+              key: ${{ steps.cache-restore.outputs.cache-primary-key }}
 
           - name: Upload public dir
             uses: actions/upload-artifact@v4
@@ -85,11 +101,11 @@ jobs:
                 chmod 600 ~/.ssh/webhost.key
                 cat >>~/.ssh/config <<END
                 Host webhost
-                  HostName ${{ secrets.SSH_HOST }}
-                  User ${{ secrets.SSH_USER }}
+                  HostName ${{ vars.SSH_HOST }}
+                  User ${{ vars.SSH_USER }}
                   IdentityFile ~/.ssh/webhost.key
                   StrictHostKeyChecking no
                 END
 
             - name: rsync public dir make sure to delete old files
-              run: rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -l ${{ secrets.SSH_USER }}" ./public/ ${{ secrets.SSH_HOST }}:${{ vars.WEB_PATH }}/
+              run: rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -l ${{ vars.SSH_USER }}" ./public/ ${{ vars.SSH_HOST }}:${{ vars.WEB_PATH }}/
