@@ -114,4 +114,4 @@ jobs:
                 END
 
             - name: rsync public dir make sure to delete old files
-              run: rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -l ${{ vars.SSH_USER }}" ./public/ webhost:${{ vars.WEB_PATH }}/
+              run: rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./public/ webhost:${{ vars.WEB_PATH }}/
