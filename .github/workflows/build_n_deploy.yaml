@@ -111,6 +111,7 @@ jobs:
                   User ${{ vars.SSH_USER }}
                   IdentityFile ~/.ssh/webhost.key
                   StrictHostKeyChecking no
+                  LogLevel ERROR
                 END
 
             - name: rsync public dir make sure to delete old files
