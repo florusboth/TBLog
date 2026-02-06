@@ -48,7 +48,7 @@ weight = 3
 [params]
 title="Typed like a Manatee"
 author = "Florus Both"
-description = "A personal blog about Linux, Oracle, and other tech topics."
+description = "A blog about Linux, Oracle, and other tech topics."
 footnote = """
 Powered by <a class=link href=https://gohugo.io target=_blank rel=noopener>Hugo</a> | 
 Theme <a class=link href=https://github.com/michaelneuper/hugo-texify3 target=_blank rel=noopener>TeXify3</a>
