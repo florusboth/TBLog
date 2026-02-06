@@ -24,7 +24,7 @@ jobs:
           - name: Install dependencies
             run: |
               eval "$(/home/linuxbrew/.linuxbrew/Homebrew/bin/brew shellenv bash)"
-              brew install hugo sass node
+              brew install hugo sass/sass/sass node
 
           - name: Checkout
             uses: actions/checkout@v4
