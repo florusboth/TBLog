@@ -65,7 +65,12 @@ jobs:
                 hugo-
 
           - name: Build
-            run: hugo --gc --minify
+            run: |
+              hugo \
+                --gc \
+                --minify \
+                --baseURL "${{ vars.BASE_URL }}/" \
+                --cacheDir "${{ runner.temp }}/hugo_cache"
 
           - name: Cache save
             id: cache-save
