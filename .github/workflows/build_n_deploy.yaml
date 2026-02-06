@@ -22,7 +22,9 @@ jobs:
               /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
           - name: Install dependencies
-            run: brew install hugo sass node
+            run: |
+              eval "$(/home/linuxbrew/.linuxbrew/Homebrew/bin/brew shellenv bash)"
+              brew install hugo sass node
 
           - name: Checkout
             uses: actions/checkout@v4
