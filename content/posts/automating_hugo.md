@@ -4,7 +4,7 @@ draft = false
 title = 'Automating Hugo'
 tags = ['Hugo', 'Github Actions', 'DevOps']
 +++
-## Created GH workflow to publish my Hugo site
+# Created GH workflow to publish my Hugo site
 
 After the decision was made to start using Hugo for my blog notes, I wanted it to publish as automated as possible.
 
