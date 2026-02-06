@@ -100,11 +100,11 @@ data_category_id = "{{ getenv `data_category_id` }}"
         crossorigin="anonymous">
   </script>
   """
-  facebook = false
-  twitter = false
-  email = true
-  linkedin = true
-  reddit = false
-  whatsapp = false
-  hackernews = true
-  telegram = false
+facebook = false
+twitter = false
+email = true
+linkedin = true
+reddit = false
+whatsapp = false
+hackernews = true
+telegram = false
