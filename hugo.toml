@@ -32,14 +32,16 @@ rootFontSize = "105%"
 math = true
 enableDuckDuckGoSearchBox = true
 numberedSubtitles = true
+data_repo_id = "{{ getenv `data_repo_id` }}"
+data_category_id = "{{ getenv `data_category_id` }}"
 
   [params.commentEngine]
   code = """
   <script src="https://giscus.app/client.js"
         data-repo="florusboth/TBLog"
-        data-repo-id="R_kgDORJTWIg"
+        data-repo-id={{ .Site.Params.data_repo_id }}"
         data-category="Announcements"
-        data-category-id="DIC_kwDORJTWIs4C167S"
+        data-category-id="{{ .Site.Params.data_category_id }}"
         data-mapping="pathname"
         data-strict="0"
         data-reactions-enabled="1"
