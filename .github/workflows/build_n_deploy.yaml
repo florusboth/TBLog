@@ -13,7 +13,12 @@ jobs:
           group: ${{github.workflow}} - ${{github.ref}}
 
         env:
-          HUGO_VERSION: 0.155.2
+          DART_SASS_VERSION: 1.97.3
+          GO_VERSION: 1.25.6
+          HUGO_VERSION: 0.155.0
+          NODE_VERSION: 24.13.0
+          TZ: Europe/Oslo
+
         steps:
           - name: Checkout
             uses: actions/checkout@v4
@@ -24,23 +29,34 @@ jobs:
           - name: Install Node.js dependencies
             run: '[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true'
 
-          - name: Install Dart Sass Embedded
-            run: sudo snap install dart-sass-embedded            
+          - name: Install Dart Sass
+            run: |
+              curl -sLJO "https://github.com/sass/dart-sass/releases/download/${DART_SASS_VERSION}/dart-sass-${DART_SASS_VERSION}-linux-x64.tar.gz"
+              tar -C "${HOME}/.local" -xf "dart-sass-${DART_SASS_VERSION}-linux-x64.tar.gz"
+              rm "dart-sass-${DART_SASS_VERSION}-linux-x64.tar.gz"
+              echo "${HOME}/.local/dart-sass" >> "${GITHUB_PATH}"        
 
           - name: Setup Hugo
             uses: peaceiris/actions-hugo@v3
             with:
               hugo-version: 'latest'
-              extended: true
+              extended: true              
+
+          - name: Verify installations
+            run: |
+              echo "Dart Sass: $(sass --version)"
+              echo "Go: $(go version)"
+              echo "Hugo: $(hugo version)"
+              echo "Node.js: $(node --version)"              
 
           - name: Build
-            run: hugo --minify
+            run: hugo --gc --minify
 
           - name: Upload public dir
             uses: actions/upload-artifact@v4
             with:
               name: public-artifact
-              path: public/
+              path: ./public
 
     # Deploy job
     deploy:
