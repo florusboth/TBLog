@@ -78,13 +78,6 @@ jobs:
                 name: public-artifact
                 path: public
 
-            - name: Set globals
-              id: globals
-              shell: bash
-              run: |
-                echo "${{ secrets.SSH_USER }}" >> "${GITHUB_OUTPUT}"
-                echo "${{ secrets.SSH_HOST }}" >> "${GITHUB_OUTPUT}"
-
             - name: Configure SSH
               run: |
                 mkdir -p ~/.ssh/
@@ -92,11 +85,11 @@ jobs:
                 chmod 600 ~/.ssh/webhost.key
                 cat >>~/.ssh/config <<END
                 Host webhost
-                  HostName ${{ steps.globals.outputs.SSH_HOST }}
-                  User ${{ steps.globals.outputs.SSH_USER }}
+                  HostName ${{ secrets.SSH_HOST }}
+                  User ${{ secrets.SSH_USER }}
                   IdentityFile ~/.ssh/webhost.key
                   StrictHostKeyChecking no
                 END
 
             - name: rsync public dir make sure to delete old files
-              run: rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -l ${{ steps.globals.outputs.SSH_USER }}" ./public/ ${{ steps.globals.outputs.SSH_HOST }}:${{ vars.WEB_PATH }}/
+              run: rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -l ${{ secrets.SSH_USER }}" ./public/ ${{ secrets.SSH_HOST }}:${{ vars.WEB_PATH }}/
