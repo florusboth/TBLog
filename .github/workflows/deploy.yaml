@@ -86,33 +86,17 @@ jobs:
               name: public-artifact
               path: ./public
 
-          - name: Discord notification
-            if: always()
-            run: |
-              if [ "${{ job.status }}" == "success" ]; then
-                COLOR=3066993  # Green
-                TITLE="Build Passed"
-              else
-                COLOR=15158332  # Red
-                TITLE="Build Failed"
-              fi
-              
-              ENV_NAME="${{ github.ref_name == 'main' && 'Production' || 'Development' }}"
-
-              curl -X POST "${{ secrets.DISCORD_WEBHOOK_URL }}" \
-                -H "Content-Type: application/json" \
-                -d "{
-                  \"embeds\": [{
-                    \"title\": \"$TITLE ($ENV_NAME)\",
-                    \"color\": $COLOR,
-                    \"fields\": [
-                      {\"name\": \"Repository\", \"value\": \"${{ github.repository }}\", \"inline\": true},
-                      {\"name\": \"Branch\", \"value\": \"${{ github.ref_name }}\", \"inline\": true},
-                      {\"name\": \"Author\", \"value\": \"${{ github.actor }}\", \"inline\": true}
-                    ],
-                    \"url\": \"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
-                  }]
-                }"                
+    # Notify build result
+    notify-build:
+        needs: build
+        if: always()
+        uses: ./.github/workflows/notify_discord.yaml
+        with:
+          status: ${{ needs.build.result }}
+          type: "Build"
+          message: "Build completed"
+        secrets:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
     # Deploy job
     deploy:
@@ -144,31 +128,16 @@ jobs:
 
             - name: rsync public dir make sure to delete old files
               run: rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./public/ webhost:${{ vars.WEB_PATH }}/
-              
-            - name: Discord notification
-              if: always()
-              run: |
-                if [ "${{ job.status }}" == "success" ]; then
-                  COLOR=3066993  # Green
-                  TITLE="Deployment Succeeded"
-                else
-                  COLOR=15158332  # Red
-                  TITLE="Deployment Failed"
-                fi
-                
-                ENV_NAME="${{ github.ref_name == 'main' && 'Production' || 'Development' }}"
 
-                curl -X POST "${{ secrets.DISCORD_WEBHOOK_URL }}" \
-                  -H "Content-Type: application/json" \
-                  -d "{
-                    \"embeds\": [{
-                      \"title\": \"$TITLE ($ENV_NAME)\",
-                      \"color\": $COLOR,
-                      \"fields\": [
-                        {\"name\": \"Repository\", \"value\": \"${{ github.repository }}\", \"inline\": true},
-                        {\"name\": \"Branch\", \"value\": \"${{ github.ref_name }}\", \"inline\": true},
-                        {\"name\": \"Author\", \"value\": \"${{ github.actor }}\", \"inline\": true}
-                      ],
-                      \"url\": \"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
-                    }]
-                  }"                 
+    # Notify deployment result
+    notify-deploy:
+        needs: deploy
+        if: always()
+        uses: ./.github/workflows/notify_discord.yaml
+        with:
+          status: ${{ needs.deploy.result }}
+          type: "Deployment"
+          message: "Deployment completed"
+        secrets:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+

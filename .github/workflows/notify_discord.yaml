@@ -1,0 +1,50 @@
+name: Send Notification
+
+on:
+  workflow_call:
+    inputs:
+      status:
+        type: string
+        required: true
+      type:
+        type: string
+        required: true
+      message:
+        type: string
+        required: true
+    secrets:
+      DISCORD_WEBHOOK_URL:
+        required: true
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Discord notification
+        if: always()
+        run: |
+            if [ "${{ inputs.status }}" == "success" ]; then
+                COLOR=3066993  # Green
+                TITLE="${{ inputs.type }} Succeeded"
+            else
+                COLOR=15158332  # Red
+                TITLE="${{ inputs.type }} Failed"
+            fi
+            
+            ENV_NAME="${{ github.ref_name == 'main' && 'Production' || 'Development' }}"
+
+            curl -X POST "${{ secrets.DISCORD_WEBHOOK_URL }}" \
+                -H "Content-Type: application/json" \
+                -d "{
+                \"embeds\": [{
+                    \"title\": \"$TITLE ($ENV_NAME)\",
+                    \"color\": $COLOR,
+                    \"fields\": [
+                    {\"name\": \"Repository\", \"value\": \"${{ github.repository }}\", \"inline\": true},
+                    {\"name\": \"Branch\", \"value\": \"${{ github.ref_name }}\", \"inline\": true},
+                    {\"name\": \"Author\", \"value\": \"${{ github.actor }}\", \"inline\": true}
+                    ],
+                    \"url\": \"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
+                }]
+                }"            
