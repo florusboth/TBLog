@@ -15,9 +15,14 @@ jobs:
         env:
           HUGO_VERSION: 0.155.2
         steps:
-          - uses: gerlero/brew-install@v1
-            with:
-              packages: hugo sass/sass/sass node
+          - name: Install Brew
+            shell: bash
+            run: |
+              export NONINTERACTIVE=1
+              /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+          - name: Install dependencies
+            run: brew install hugo sass node
 
           - name: Checkout
             uses: actions/checkout@v4
