@@ -19,6 +19,7 @@ jobs:
           HUGO_VERSION: 0.155.0
           NODE_VERSION: 24.13.0
           TZ: Europe/Oslo
+          HUGO_DRAFTS: ${{ github.ref_name != 'main' && '--buildDrafts ' || '' }}
 
         steps:
           - name: Checkout
@@ -69,6 +70,7 @@ jobs:
             run: |
               hugo \
                 --gc \
+                ${HUGO_DRAFTS} \
                 --minify \
                 --baseURL "${{ vars.BASE_URL }}/" \
                 --cacheDir "${{ runner.temp }}/hugo_cache"
