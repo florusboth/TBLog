@@ -2,7 +2,7 @@
 date = '2026-02-13T15:10:08Z'
 draft = true
 title = 'Debian 13: Add Private IP Hetzner Cloud'
-tags = '['Debian','Hetzner']
+tags = ['Debian','Hetzner']
 +++
 # Debian 13: Add private IP Hetzner Cloud
 
