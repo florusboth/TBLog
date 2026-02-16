@@ -129,7 +129,7 @@ jobs:
                 END
 
             - name: rsync public dir make sure to delete old files
-              run: rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./public/ webhost:${{ vars.WEB_PATH }}/
+              run: rsync -rvz --delete -e "ssh -o StrictHostKeyChecking=no" ./public/ webhost:${{ vars.WEB_PATH }}/
 
     # Notify deployment result
     notify-deploy:
